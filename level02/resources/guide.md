@@ -1,3 +1,6 @@
+# Packets captured over clear text protocol -
+
+
 chmod 777 .
 
 ### Copy to the host 
@@ -8,5 +11,13 @@ Inspect with wireshark
 
 open the file level02.pcap in wireshark
 
+![Example Image](wireshark.png)
+
+
+Knowing that, we will follow the TCP stream.
+
+```
+Analyze > Follow > TCP stream
+```
 
 ft_wandr...NDRel.L0L -> ft_waNDReL0L

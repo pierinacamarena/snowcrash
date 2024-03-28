@@ -1,3 +1,7 @@
+# Breakable encryption algorithm => reverse engineering
+
+## Step0: Explore available files
+
 ```
 level09@SnowCrash:~$ ls -la
 total 24
@@ -45,6 +49,8 @@ level09@SnowCrash:~$ ./level09 abc\
 ace
 ```
 
+### Conclusions
+
 a simple transformation algorithm is applied to the input string or number. Each character of the input is being incremented by its position in the string (starting from 0). Encryption by offset
 
 C program that reverses the algorithm
@@ -63,7 +69,7 @@ int main(int ac, char **av) {
 }
 ```
 
-I write it in /tmp for permissions
+We write it in /tmp for permissions
 
 ```
 level09@SnowCrash:/tmp$ gcc -std=c99 level9.c

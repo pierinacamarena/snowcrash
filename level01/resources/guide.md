@@ -1,3 +1,8 @@
+# Weak hashed password stored in world-readable file
+
+## Step 0: explore passwords
+
+```
 level01@SnowCrash:~$ cat /etc/passwd
 root:x:0:0:root:/root:/bin/bash
 daemon:x:1:1:daemon:/usr/sbin:/bin/sh
@@ -18,18 +23,25 @@ flag02:x:3002:3002::/home/flag/flag02:/bin/bash
 flag03:x:3003:3003::/home/flag/flag03:/bin/bash
 ...
 
+```
+
 ## John not available in the vm 
 
 We will run it in a docker
 
 ### SETUP
 1. create a directory called /JTR
-
+```
 cd /JTR
-2. echo '42hDRfypTqqnw' > psswd.txt
+```
+2. 
+    ```
+    echo '42hDRfypTqqnw' > psswd.txt
+    ```
 
 3. Create a dockerfile
 
+```
 FROM ubuntu:latest
 
 RUN apt-get update && apt-get install -y \
@@ -40,23 +52,31 @@ COPY . /app
 WORKDIR /app
 
 CMD ["bash"]
-
+```
 
 4. build the image 
+```
 docker build -t myjtr .
+```
 
 5. run container
+```
 docker run -it myjtr
+```
 
 6. run john 
+```
 root@c30292710cd6:/app# john psswd.txt --show
 ?:abcdefg
 
 1 password hash cracked, 0 left
+```
 
 
 password: abcdefg
 
 su flag01
+
 getflag
+
 f2av5il02puano7naaf6adaaf
