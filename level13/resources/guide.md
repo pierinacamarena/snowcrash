@@ -4,6 +4,7 @@ The security vulnerability in this scenario is not a flaw in the binary itself b
 
 ## We explore the files
 
+```
 level13@SnowCrash:~$ ls -la
 total 20
 dr-x------ 1 level13 level13  120 Mar  5  2016 .
@@ -36,10 +37,11 @@ __libc_start_main
 GLIBC_2.0
 PTRh`
 UWVS
-
+```
 
 ### Using gdb to analyze the binary
 
+```
 (gdb) disas main
 Dump of assembler code for function main:
    0x0804858c <+0>:	push   %ebp
@@ -65,21 +67,22 @@ Dump of assembler code for function main:
    0x080485e3 <+87>:	call   0x8048360 <printf@plt>
    0x080485e8 <+92>:	leave  
 
-
+```
 GDB allows the modification of registers during the execution,
 
 So we can see the call to getuid
-0x08048595 <+9>:	call   0x8048380 <getuid@plt>
+```0x08048595 <+9>:	call   0x8048380 <getuid@plt>```
 
 The return value from getuid will be placed in the eax register, a general-purpose register commonly used to store return values from functions.
 
 The line
-0x0804859a <+14>:	cmp    $0x1092,%eax
+```0x0804859a <+14>:	cmp    $0x1092,%eax```
 Performs a comparison among two values
 The $0x1092 is an immediate value (in hexadecimal notation) representing the number 4242 in decimal. %eax refers to the eax register, which, as mentioned above, should now contain the UID returned by getuid.
 
 ### Using gdb to modify the register 
 
+```
 (gdb) break *0x0804859a
 Breakpoint 1 at 0x804859a
 (gdb) run
@@ -91,3 +94,4 @@ Breakpoint 1, 0x0804859a in main ()
 Continuing.
 your token is 2A31L79asukciNyi8uppkEuSx
 [Inferior 1 (process 32692) exited with code 050]
+```
