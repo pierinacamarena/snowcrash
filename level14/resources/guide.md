@@ -1,4 +1,5 @@
 ## Step 0: exploring potential files
+```
 level14@SnowCrash:~$ ls -la
 total 12
 dr-x------ 1 level14 level14  100 Mar  5  2016 .
@@ -9,11 +10,12 @@ d--x--x--x 1 root    users    340 Aug 30  2015 ..
 
 level14@SnowCrash:~$ find / -user flag14 -group flag14 2>/dev/null | grep -v proc
 level14@SnowCrash:~$ 
+```
 
 Since we get nothing we can explore the gettheflag command
 
 ## Step1: exploring gettheflag
-
+```
 (gdb) disas main
 Dump of assembler code for function main:
    0x08048946 <+0>:	push   %ebp
@@ -39,22 +41,47 @@ Dump of assembler code for function main:
    0x080489a8 <+98>:	movl   $0x8048fc4,(%esp)
    0x080489af <+105>:	call   0x80484d0 <getenv@plt>
 
-### Potential vulnerabilities
-1. Use of ptrace:
+```
 
-At address 0x08048989, the program calls ptrace. This system call is often used to prevent debugging of the binary. If ptrace returns a non-negative result (checked by test %eax,%eax and followed by jns), it typically means that ptrace detected an attempt to trace the program, usually indicative of reverse engineering efforts.
-Potential Vulnerability: A common way to bypass this check is to modify the binary to skip the call to ptrace or to alter its condition check afterward.
+### Step1: Exploiting vulnerabilities
+```
+(gdb) b main
+Breakpoint 1 at 0x804894a
 
-2. Call to getenv:
 
-At address 0x080489af, the program calls getenv. This function retrieves the value of an environment variable.
-Potential Vulnerability: If the returned environment variable is used unsafely, such as being passed to functions that execute commands (system, exec, etc.) or used in a way that doesn't properly handle special characters, it can lead to environment variable injection attacks. This would depend on subsequent instructions not shown here.
+(gdb) run
+Starting program: /bin/getflag 
+Breakpoint 1, 0x0804894a in main ()
 
-3. Stack Adjustments and Fixed-Size Buffer:
 
-The instructions at 0x0804894a and 0x0804894d adjust the stack pointer and allocate a fixed-size buffer on the stack (sub $0x120,%esp). This is a common setup for buffer usage.
-Potential Vulnerability: a common security concern would be a buffer overflow vulnerability. If the program later attempts to copy user-supplied data into this buffer without properly checking the length, it could lead to overflow conditions where an attacker can overwrite adjacent memory, potentially allowing for arbitrary code execution or control flow hijacking.
+(gdb)ju *0x08048b21
+Continuing at 0x8048b21.
+kooda2puivaav1idi4f57q8iq
+*** stack smashing detected ***: /bin/getflag terminated
 
-### Step2: Exploiting vulnerabilities
+Program received signal SIGSEGV, Segmentation fault.
+0xb7e1cb19 in ?? () from /lib/i386-linux-gnu/libgcc_s.so.1
+```
 
-Bypassing ptrace
+```0x08048b21```
+part of a sequence of comparisons against eax, which likely contains the result of getuid()
+
+We find the password of level02
+
+We can try the same process for leve14
+
+we try
+```
+(gdb) ju *0x08048bbb
+Continuing at 0x8048bbb.
+7QiHafiNa3HVozsaXkawuYrTstxbpABHD8CPnHJ
+*** stack smashing detected ***: /bin/getflag terminated
+...
+```
+```
+flag14@SnowCrash:~$ su flag14
+Password: 
+Congratulation. Type getflag to get the key and send it to me the owner of this livecd :)
+flag14@SnowCrash:~$ getflag
+Check flag.Here is your token : 7QiHafiNa3HVozsaXkawuYrTstxbpABHD8CPnHJ
+```
