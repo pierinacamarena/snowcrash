@@ -1,4 +1,4 @@
-level09@SnowCrash:~$ ls -la
+`level09@SnowCrash:~$ ls -la
 total 24
 dr-x------ 1 level09 level09  140 Mar  5  2016 .
 d--x--x--x 1 root    users    340 Aug 30  2015 ..
@@ -12,8 +12,7 @@ You need to provied only one arg.
 level09@SnowCrash:~$ ./level09 token
 tpmhr
 level09@SnowCrash:~$ cat token 
-f4kmm6p|=�p�n��DB�Du{��
-
+f4kmm6p|=�p�n��DB�Du{��`
 
 level09@SnowCrash:~$ ./level09 1
 1
